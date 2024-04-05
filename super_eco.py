@@ -9,7 +9,7 @@
     ENDPOINT_SERVIDOR=127.0.0.1:8081 python super_eco.py
 """
 
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, Header,Request
 import os
 import random
@@ -21,6 +21,8 @@ from logging import getLogger
 # import requests
 import httpx
 from typing import Optional
+from fastapi.responses import HTMLResponse
+
 
 
 populacao_raw = """
@@ -55,6 +57,14 @@ else:
     logger.info("Endpoint do servidor não foi definido, assumindo valor padrão.")
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas as origens
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos
+    allow_headers=["*"],  # Permite todos os cabeçalhos
+)
 
 async def ip4_addresses():
     ip_list = []
@@ -91,6 +101,14 @@ async def get_populacao(cidade):
         return populacao.get(cidade, "-2")
     else:
         return -1
+    
+@app.get("/", response_class=HTMLResponse)
+async def read_html():
+
+    """Retorna o conteúdo do arquivo index.html. 
+       para nao complicar, vamos carregar o arquivo html e retornar o conteudo dele."""
+    with open("index.html", "r") as html_file:
+        return HTMLResponse(content=html_file.read())
 
 
 @app.get("/eco")
