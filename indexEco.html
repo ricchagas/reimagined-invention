@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eco da Cidade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-right: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resposta {
+            margin-top: 20px;
+        }
+        .eco-resposta {
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .eco-resposta p {
+            margin: 5px 0;
+        }
+        .eco-resposta h3 {
+            color: #007BFF;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        async function buscarEco() {
+            const cidade = document.getElementById('cidade').value;
+            const url = `/eco?cidade=${encodeURIComponent(cidade)}`;
+
+            try {
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+                const areaDeResposta = document.getElementById('resposta');
+
+                areaDeResposta.innerHTML = ''; // Limpa a área de resposta
+
+                dados.respostas.forEach((eco, index) => {
+                    const conteudo = `
+                    <div class="eco-resposta">
+                        <h3>Resposta ${index + 1}</h3>
+                            <p><strong>Hop:</strong> ${eco.hop}</p>
+                            <p><strong>Servidor:</strong> ${eco.nome_do_servidor}</p>
+                            <p><strong>IPs do Servidor:</strong> ${eco.ip_do_servidor.join(', ')}</p>
+                            <p><strong>Tempo de Latência:</strong> ${eco.tempo_de_latencia}</p>
+                            <p><strong>Mensagem:</strong> ${eco.mensagem}</p>
+                            <p><strong>Porta:</strong> ${eco.porta}</p>
+                            <p><strong>População:</strong> ${eco.populacao}</p>
+                        </div>
+                    `;
+                    areaDeResposta.innerHTML += conteudo;
+                });
+            } catch (erro) {
+                console.error('Erro ao buscar eco:', erro);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Buscar Eco da Cidade</h1>
+    <input type="text" id="cidade" placeholder="Digite o nome da cidade">
+    <button onclick="buscarEco()">Buscar</button>
+    <div id="resposta"></div>
+</body>
+</html>

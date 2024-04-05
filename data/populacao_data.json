@@ -1,0 +1,210 @@
+[
+    {
+      "Estado": "SP",
+      "Cidade": "São Paulo",
+      "População": "12.399.929",
+      "Região": "Sudeste",
+      "Latitude": -23.5478,
+      "Longitude": -46.6359
+    },
+    {
+      "Estado": "RJ",
+      "Cidade": "Rio de Janeiro",
+      "População": "6.772.518",
+      "Região": "Sudeste",
+      "Latitude": -22.9026,
+      "Longitude": -43.207
+    },
+    {
+      "Estado": "MG",
+      "Cidade": "Belo Horizonte",
+      "População": "2.538.382",
+      "Região": "Sudeste",
+      "Latitude": -19.9248,
+      "Longitude": -43.9382
+    },
+    {
+      "Estado": "BA",
+      "Cidade": "Salvador",
+      "População": "2.877.393",
+      "Região": "Nordeste",
+      "Latitude": -12.9711,
+      "Longitude": -38.5108
+    },
+    {
+      "Estado": "RS",
+      "Cidade": "Porto Alegre",
+      "População": "1.489.019",
+      "Região": "Sul",
+      "Latitude": -30.0277,
+      "Longitude": -51.2283
+    },
+    {
+      "Estado": "CE",
+      "Cidade": "Fortaleza",
+      "População": "2.715.921",
+      "Região": "Nordeste",
+      "Latitude": -3.7172,
+      "Longitude": -38.5431
+    },
+    {
+      "Estado": "SC",
+      "Cidade": "Florianópolis",
+      "População": 529.247,
+      "Região": "Sul",
+      "Latitude": -27.5961,
+      "Longitude": -48.5499
+    },
+    {
+      "Estado": "PE",
+      "Cidade": "Recife",
+      "População": "1.665.041",
+      "Região": "Nordeste",
+      "Latitude": -8.0539,
+      "Longitude": -34.8811
+    },
+    {
+      "Estado": "GO",
+      "Cidade": "Goiânia",
+      "População": "1.552.546",
+      "Região": "Centro-Oeste",
+      "Latitude": -16.6869,
+      "Longitude": -49.2647
+    },
+    {
+      "Estado": "PR",
+      "Cidade": "Curitiba",
+      "População": "1.963.731",
+      "Região": "Sul",
+      "Latitude": -25.4278,
+      "Longitude": -49.2734
+    },
+    {
+      "Estado": "MA",
+      "Cidade": "São Luís",
+      "População": "1.114.230",
+      "Região": "Nordeste",
+      "Latitude": -2.5283,
+      "Longitude": -44.2969
+    },
+    {
+      "Estado": "BH",
+      "Cidade": "Belo Horizonte",
+      "População": "2.538.382",
+      "Região": "Sudeste",
+      "Latitude": -19.9248,
+      "Longitude": -43.9382
+    },
+    {
+      "Estado": "AM",
+      "Cidade": "Manaus",
+      "População": "2.215.523",
+      "Região": "Norte",
+      "Latitude": -3.088,
+      "Longitude": -60.0217
+    },
+    {
+      "Estado": "ES",
+      "Cidade": "Vitória",
+      "População": 372.187,
+      "Região": "Sudeste",
+      "Latitude": -20.3167,
+      "Longitude": -40.3331
+    },
+    {
+      "Estado": "MT",
+      "Cidade": "Cuiabá",
+      "População": 618.145,
+      "Região": "Centro-Oeste",
+      "Latitude": -15.6069,
+      "Longitude": -56.0978
+    },
+    {
+      "Estado": "RN",
+      "Cidade": "Natal",
+      "População": 888.713,
+      "Região": "Nordeste",
+      "Latitude": -5.795,
+      "Longitude": -35.2088
+    },
+    {
+      "Estado": "PB",
+      "Cidade": "João Pessoa",
+      "População": 811.614,
+      "Região": "Nordeste",
+      "Latitude": -7.115,
+      "Longitude": -34.8738
+    },
+    {
+      "Estado": "AL",
+      "Cidade": "Maceió",
+      "População": "1.045.323",
+      "Região": "Nordeste",
+      "Latitude": -9.6658,
+      "Longitude": -35.7383
+    },
+    {
+      "Estado": "SE",
+      "Cidade": "Aracaju",
+      "População": 667.234,
+      "Região": "Nordeste",
+      "Latitude": -10.9107,
+      "Longitude": -37.0625
+    },
+    {
+      "Estado": "RO",
+      "Cidade": "Porto Velho",
+      "População": 548.331,
+      "Região": "Norte",
+      "Latitude": -8.7735,
+      "Longitude": -63.9042
+    },
+    {
+      "Estado": "AC",
+      "Cidade": "Rio Branco",
+      "População": 431.273,
+      "Região": "Norte",
+      "Latitude": -9.9667,
+      "Longitude": -67.8039
+    },
+    {
+      "Estado": "AP",
+      "Cidade": "Macapá",
+      "População": 513.718,
+      "Região": "Norte",
+      "Latitude": 0.0289,
+      "Longitude": -51.0542
+    },
+    {
+      "Estado": "RR",
+      "Cidade": "Boa Vista",
+      "População": 434.982,
+      "Região": "Norte",
+      "Latitude": 2.8092,
+      "Longitude": -60.6748
+    },
+    {
+      "Estado": "MS",
+      "Cidade": "Campo Grande",
+      "População": 911.314,
+      "Região": "Centro-Oeste",
+      "Latitude": -20.4528,
+      "Longitude": -54.6083
+    },
+    {
+      "Estado": "TO",
+      "Cidade": "Palmas",
+      "População": 329.725,
+      "Região": "Norte",
+      "Latitude": -10.2322,
+      "Longitude": -48.3242
+    },
+    {
+      "Estado": "DF",
+      "Cidade": "Brasília",
+      "População": "3.094.333",
+      "Região": "Centro-Oeste",
+      "Latitude": -15.7797,
+      "Longitude": -47.92
+    }
+  ]
