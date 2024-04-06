@@ -32,11 +32,17 @@ def generate_response (raw_data):
     response["waether"]["wind_speed_10m"] = f'{raw_data["current"]["wind_speed_10m"]} : {raw_data["current_units"]["wind_speed_10m"]}'
 
     if env.VERSION > 2:
+        max_response = 48
+
         response["waether"]["hourly"] = []
+        ct  = 0
         for i, item in enumerate(raw_data["hourly"]["time"]):
             response["waether"]["hourly"].append( {"hour": item,  
                                                    "temperature_2m": f'{raw_data["hourly"]["temperature_2m"][i]}'
                                                     })
+            ct += 1
+            if ct > max_response:
+                break
 
     return response
 

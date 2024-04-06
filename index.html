@@ -119,6 +119,12 @@
             /* Espaçamento reduzido entre os itens */
         }
 
+        #loading {
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
         .metadata-info h3 {
             margin-top: 10px;
             margin-bottom: 5px;
@@ -148,7 +154,14 @@
 
     <div class="resultado" id="resultado"></div>
 
+    <canvas id="forecastChart"></canvas>
+
+    <div id="loading" style="display: none;">Carregando...</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        let forecastChart; // Armazena a instância do gráfico fora da função
+
         function escolhaRandomica() {
             const locais = [
                 { "Estado": "SP", "Cidade": "São Paulo" },
@@ -216,28 +229,90 @@
             }
 
             // Título e ajustes para a seção de forecast
+            // if (dados.clima && dados.clima.data && dados.clima.data.waether && dados.clima.data.waether.hourly && dados.clima.data.waether.hourly.length > 0) {
+            //     const forecastTitle = document.createElement('h2');
+            //     forecastTitle.textContent = 'Previsão Horária';
+            //     resultadoDiv.appendChild(forecastTitle);
+
+            //     const gridContainer = document.createElement('div');
+            //     gridContainer.classList.add('grid-container');
+
+            //     dados.clima.data.waether.hourly.forEach((hora, index) => {
+            //         // Exemplo para limitar a quantidade exibida, remova o if para mostrar todos
+            //         if (index < 24) { // Ajuste este valor conforme desejado
+            //             const gridItem = document.createElement('div');
+            //             gridItem.classList.add('grid-item');
+            //             gridItem.innerHTML = `
+            //     <strong>${new Date(hora.hour).toLocaleTimeString([], { month: "short", day: "2-digit", hour: '2-digit', minute: '2-digit' })}</strong>
+            //     <p>${hora.temperature_2m} °C</p>
+            // `;
+            //             gridContainer.appendChild(gridItem);
+            //         }
+            //     });
+
+            //     resultadoDiv.appendChild(gridContainer);
+            // }
+
+
             if (dados.clima && dados.clima.data && dados.clima.data.waether && dados.clima.data.waether.hourly && dados.clima.data.waether.hourly.length > 0) {
-                const forecastTitle = document.createElement('h2');
-                forecastTitle.textContent = 'Previsão Horária';
-                resultadoDiv.appendChild(forecastTitle);
+                if (forecastChart) {
+                    forecastChart.destroy();
+                }
 
-                const gridContainer = document.createElement('div');
-                gridContainer.classList.add('grid-container');
 
-                dados.clima.data.waether.hourly.forEach((hora, index) => {
-                    // Exemplo para limitar a quantidade exibida, remova o if para mostrar todos
-                    if (index < 24) { // Ajuste este valor conforme desejado
-                        const gridItem = document.createElement('div');
-                        gridItem.classList.add('grid-item');
-                        gridItem.innerHTML = `
-                <strong>${new Date(hora.hour).toLocaleTimeString([], { month: "short", day: "2-digit", hour: '2-digit', minute: '2-digit' })}</strong>
-                <p>${hora.temperature_2m} °C</p>
-            `;
-                        gridContainer.appendChild(gridItem);
+                const horas = dados.clima.data.waether.hourly.map(item => new Date(item.hour).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                const temperaturas = dados.clima.data.waether.hourly.map(item => item.temperature_2m);
+                const ctx = document.getElementById('forecastChart').getContext('2d');
+                // Criando um gradiente de fundo para a linha
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(75, 192, 192, 0.5)');
+                gradient.addColorStop(1, 'rgba(75, 192, 192, 0.05)');
+
+                forecastChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: horas,
+                        datasets: [{
+                            label: 'Temperatura (°C)',
+                            data: temperaturas,
+                            fill: true, // Ativa o preenchimento
+                            backgroundColor: gradient, // Usa o gradiente como fundo
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 2, // Espessura da linha
+                            tension: 0.4, // Ajusta para curvas mais suaves
+                            pointBackgroundColor: 'rgb(255, 255, 255)', // Cor de fundo dos pontos
+                            pointBorderColor: 'rgb(75, 192, 192)', // Cor da borda dos pontos
+                            pointRadius: 4, // Tamanho dos pontos
+                            pointHoverRadius: 6, // Tamanho dos pontos ao passar o mouse
+                            pointHitRadius: 30, // Área de detecção do mouse maior para melhorar a interatividade
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top', // Posiciona a legenda no topo
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        elements: {
+                            line: {
+                                tension: 0.4 // Garante que a suavização seja aplicada
+                            }
+                        }
                     }
                 });
-
-                resultadoDiv.appendChild(gridContainer);
             }
 
             if (dados.metadata) {
@@ -262,6 +337,7 @@
             const estado = document.getElementById('estado').value;
             const cidade = document.getElementById('cidade').value;
             const url = `http://localhost:8000/info?cidade=${encodeURIComponent(cidade)}&estado=${encodeURIComponent(estado)}`;
+            document.getElementById('loading').style.display = 'block';
 
             fetch(url)
                 .then(response => {
@@ -272,11 +348,14 @@
                 })
                 .then(dados => {
                     mostrarResultado(dados);
+                    document.getElementById('loading').style.display = 'none';
                 })
                 .catch(erro => {
                     console.error('Erro:', erro);
                     document.getElementById('resultado').textContent = 'Erro na consulta: ' + erro;
+                    document.getElementById('loading').style.display = 'none';
                 });
+
         }
 
     </script>

@@ -1,0 +1,29 @@
+# 
+#FROM harbor.prod.cpq.k8s.corp.clarobr/devops/python:latest
+FROM python:latest
+# 
+
+WORKDIR /code
+
+# 
+COPY requirements.txt /code/requirements.txt
+
+#UPDATE curl    
+RUN apt-get update && apt-get install -y curl git linux-libc-dev  libtiff-dev libcurl4  libcurl4-openssl-dev libcurl3-gnutls  git-man   
+
+RUN pip install --upgrade pip
+
+# 
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+# 
+COPY . /code
+copy data /code/data
+
+ENV VERSION="2"
+
+# get the latest version of the code
+EXPOSE 8000
+
+# 
+CMD ["uvicorn", "super_eco:app", "--host", "0.0.0.0", "--port", "8000"]

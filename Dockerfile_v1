@@ -6,7 +6,7 @@ FROM python:latest
 WORKDIR /code
 
 # 
-COPY ./requirements.txt /code/requirements.txt
+COPY requirements.txt /code/requirements.txt
 
 #UPDATE curl    
 RUN apt-get update && apt-get install -y curl git linux-libc-dev  libtiff-dev libcurl4  libcurl4-openssl-dev libcurl3-gnutls  git-man   
@@ -18,8 +18,9 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # 
 COPY . /code
+copy data /code/data
 
-ENV APPLICATION_FIXED="1"
+ENV VERSION="1"
 
 # get the latest version of the code
 EXPOSE 8000
