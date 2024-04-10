@@ -34,7 +34,7 @@ async def sucess_or_fail():
 @router.get("/latitude")
 async def get_populacao(cidade: str, estado: str):
 
-    await sucess_or_fail()
+    # await sucess_or_fail()
 
     for item in populacao_data:
         if item["municipio"].lower() == cidade.lower() and item["uf"].lower() == estado.lower():

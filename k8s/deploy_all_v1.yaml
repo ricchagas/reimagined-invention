@@ -1,0 +1,177 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: letsdoit
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clima-echo-app
+  namespace: letsdoit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clima-echo-app
+  template:
+    metadata:
+      labels:
+        app: clima-echo-app
+    spec:
+      containers:
+      - name: clima-echo-app
+        image: "ricchagas/superecho:v1"
+        env:
+        - name: MENSAGEM_ECO
+          value: "processamento"
+       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clima-echo-svc
+  namespace: letsdoit
+spec:
+  selector:
+    app: clima-echo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000   
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: populacao-echo-app
+  namespace: letsdoit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: populacao-echo-app
+  template:
+    metadata:
+      labels:
+        app: populacao-echo-app
+    spec:
+      containers:
+      - name: populacao-echo-app
+        image: "ricchagas/superecho:v1"
+        env:
+        - name: MENSAGEM_ECO
+          value: "processamento"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: populacao-echo-svc
+  namespace: letsdoit
+spec:
+  selector:
+    app: populacao-echo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000   
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: latitude-echo-app
+  namespace: letsdoit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: latitude-echo-app
+  template:
+    metadata:
+      labels:
+        app: latitude-echo-app
+    spec:
+      containers:
+      - name: latitude-echo-app
+        image: "ricchagas/superecho:v3"
+        env:
+        - name: MENSAGEM_ECO
+          value: "processamento"
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: latitude-echo-svc
+  namespace: letsdoit
+spec:
+  selector:
+    app: latitude-echo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff-echo-app
+  namespace: letsdoit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff-echo-app
+  template:
+    metadata:
+      labels:
+        app: bff-echo-app
+    spec:
+      containers:
+      - name: bff-echo-app
+        image: "ricchagas/superecho:v3"
+        env:
+        - name: MENSAGEM_ECO
+          value: "processamento"
+        - name: ENDPOINT_SERVIDOR_POPULACAO
+          value: "populacao-echo-svc"
+        - name: ENDPOINT_SERVIDOR_LATITUDE
+          value: "latitude-echo-svc"
+        - name: ENDPOINT_SERVIDOR_PREVISAO_TEMPO
+          value: "clima-echo-svc"        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bff-echo-svc
+  namespace: letsdoit
+spec:
+  selector:
+    app: bff-echo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000   
+---
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: entrada-echo-ingress
+  namespace: letsdoit
+spec:
+  rules:
+  - host: entrada.devlocal.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bff-echo-svc
+            port:
+              number: 80  

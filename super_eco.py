@@ -12,7 +12,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, Header,Request
 import uvicorn
-from logging import getLogger
+import logging 
 import httpx
 
 from enviroment import env
@@ -23,7 +23,11 @@ import frontend
 import bff
 
 
-logger = getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
+
+logger = logging.getLogger(__name__)
 
 
 # if ENDPOINT_SERVIDOR:
@@ -47,34 +51,6 @@ app.include_router(api_latitude.router)
 app.include_router(frontend.router)
 app.include_router(bff.router)
 
-@app.get("/eco")
-async def eco(request: Request, cidade: str):
-    # Tentativa de obter o cabeçalho x_hop diretamente do objeto Request
-    x_hop = request.headers.get('x-hop')  # Use hífen ao invés de underline
-    hop_value = 1 if x_hop is None else int(x_hop) + 1
-    
-    if cidade:
-        to_response = {}
-        to_response["cidade"] = cidade
-        resposta = await get_server_details()
-        resposta["populacao"] = await get_populacao(cidade)
-        resposta["hop"] = hop_value
-        to_response['respostas'] = [resposta]
-
-        if ENDPOINT_SERVIDOR:
-            async with httpx.AsyncClient() as client:
-                try:
-                    resposta_externa = await client.get(f"http://{ENDPOINT_SERVIDOR}/eco?cidade={cidade}", headers={"x-hop": str(hop_value)})
-                    if resposta_externa.status_code == 200:
-                        # Adiciona a resposta externa ao array de respostas
-                        to_response['respostas'].extend(resposta_externa.json()['respostas'])
-                    else:
-                        to_response['respostas'].append({"erro": "Falha ao chamar servidor externo."})
-                except Exception as e:
-                    to_response['respostas'].append({"erro": str(e)})
-        return to_response
-    else:
-        raise HTTPException(status_code=400, detail="Cidade é um parâmetro obrigatório.")
-
 if __name__ == "__main__":
+    logger.info("Iniciando a aplicacao")
     uvicorn.run("super_eco:app", host="0.0.0.0", port=env.SERVER_PORT, reload=True)

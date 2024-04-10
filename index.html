@@ -45,9 +45,32 @@
         }
 
         .resultado {
-            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            /* Distribui os divs uniformemente */
+            flex-wrap: wrap;
+            /* Permite que os divs se ajustem em telas menores */
         }
 
+
+        .resultado>div {
+            background-color: #e9ecef;
+            /* Cor de fundo para ambos os divs */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            width: 60%;
+
+            /* Define a largura para garantir que fiquem lado a lado */
+            box-sizing: border-box;
+            /* Garante que padding não afete a largura total */
+        }
+
+        .resultado h2 {
+            text-align: center;
+            /* Centraliza os títulos */
+            margin-top: 0;
+        }
 
         .grid-container {
             display: flex;
@@ -73,6 +96,8 @@
 
         .clima-info {
             margin-top: 20px;
+            min-width: 30%;
+            max-width: 300px;
         }
 
         .clima-info p {
@@ -89,6 +114,8 @@
             padding: 15px;
             margin-top: 20px;
             border-radius: 8px;
+            /* min-width: 45%;
+             */
         }
 
         .metadata-info h2 {
@@ -208,25 +235,34 @@
             html += `<li>Nome do Servidor: ${obj.nome_do_servidor}</li>`;
             html += `<li>IPs do Servidor: ${obj.ip_servidor.join(', ')}</li>`;
             html += `<li>Versão: ${obj.versao}</li></ul>`;
+            html += `<li> Status: ${obj.status_code}</li></ul>`;
             return html;
         };
         function mostrarResultado(dados) {
             const resultadoDiv = document.getElementById('resultado');
             resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
 
+            let infoGeralContent = `
+            <h2>Informações Gerais</h2>
+            <p>Estado: ${dados.estado}</p>
+            <p>Cidade: ${dados.cidade}</p>
+            <p>População: ${dados.populacao}</p>`;
+
             // Título para informações gerais
             if (dados.clima && dados.clima.data && dados.clima.data.waether) {
                 const clima = dados.clima.data.waether;
-                const infoGeral = document.createElement('div');
-                infoGeral.classList.add('clima-info');
-                infoGeral.innerHTML = `
-            <h2>Informações Gerais</h2>
+
+                infoGeralContent += `
             <p>Temperatura: ${clima.temperature_2m}</p>
             <p>Velocidade do Vento: ${clima.wind_speed_10m}</p>
-            <p>População: ${dados.populacao}</p>
         `;
-                resultadoDiv.appendChild(infoGeral);
             }
+
+            const infoGeral = document.createElement('div');
+            infoGeral.classList.add('clima-info');
+
+            resultadoDiv.appendChild(infoGeral);
+            infoGeral.innerHTML = infoGeralContent;
 
             // Título e ajustes para a seção de forecast
             // if (dados.clima && dados.clima.data && dados.clima.data.waether && dados.clima.data.waether.hourly && dados.clima.data.waether.hourly.length > 0) {
@@ -260,7 +296,12 @@
                 }
 
 
-                const horas = dados.clima.data.waether.hourly.map(item => new Date(item.hour).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                // const horas = dados.clima.data.waether.hourly.map(item => new Date(item.hour).toLocaleTimeString([], { hour: '2-digit', day: "2-digit", }));
+                const horas = dados.clima.data.waether.hourly.map((item, index) => {
+                    const date = new Date(item.hour);
+                    return `${date.getDate()}/${date.getMonth() + 1}:${date.getHours() < 10 ? '0' : ''} ${date.getHours()}`;
+                });
+
                 const temperaturas = dados.clima.data.waether.hourly.map(item => item.temperature_2m);
                 const ctx = document.getElementById('forecastChart').getContext('2d');
                 // Criando um gradiente de fundo para a linha
@@ -279,19 +320,34 @@
                             backgroundColor: gradient, // Usa o gradiente como fundo
                             borderColor: 'rgb(75, 192, 192)',
                             borderWidth: 2, // Espessura da linha
-                            tension: 0.4, // Ajusta para curvas mais suaves
-                            pointBackgroundColor: 'rgb(255, 255, 255)', // Cor de fundo dos pontos
-                            pointBorderColor: 'rgb(75, 192, 192)', // Cor da borda dos pontos
-                            pointRadius: 4, // Tamanho dos pontos
-                            pointHoverRadius: 6, // Tamanho dos pontos ao passar o mouse
-                            pointHitRadius: 30, // Área de detecção do mouse maior para melhorar a interatividade
+                            tension: 0.6, // Ajusta para curvas mais suaves
+
+                            // pointBackgroundColor: 'rgb(255, 255, 255)', // Cor de fundo dos pontos
+                            // pointBorderColor: 'rgb(75, 192, 192)', // Cor da borda dos pontos
+                            pointRadius: 0, // Tamanho dos pontos
+                            // pointHoverRadius: 6, // Tamanho dos pontos ao passar o mouse
+                            // pointHitRadius: 30, // Área de detecção do mouse maior para melhorar a interatividade
                         }]
                     },
                     options: {
                         scales: {
                             y: {
                                 beginAtZero: false
-                            }
+                            },
+                            x: {
+                                ticks: {
+                                    // Customizando os rótulos para exibir apenas múltiplos de 3
+                                    callback: function (value, index) {
+                                        // Retorna o valor apenas se o índice for múltiplo de 3
+                                        return value % 3 === 0 ? horas[value] : '';
+                                    },
+                                    // Garante uma formatação adequada para evitar sobreposição e melhorar a legibilidade
+                                    autoSkip: false,
+                                    maxRotation: 0,
+                                    minRotation: 0
+                                },
+                                labels: horas
+                            },
                         },
                         plugins: {
                             legend: {
@@ -336,8 +392,13 @@
         function consultarClima() {
             const estado = document.getElementById('estado').value;
             const cidade = document.getElementById('cidade').value;
-            const url = `http://localhost:8000/info?cidade=${encodeURIComponent(cidade)}&estado=${encodeURIComponent(estado)}`;
+            const url = `/info?cidade=${encodeURIComponent(cidade)}&estado=${encodeURIComponent(estado)}`;
             document.getElementById('loading').style.display = 'block';
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
+            if (forecastChart) {
+                forecastChart.destroy();
+            }
 
             fetch(url)
                 .then(response => {

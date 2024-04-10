@@ -53,7 +53,7 @@ async def get_populacao(latitude: float, longitude: float):
 
     url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m"
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(verify=False) as client:
         try:
             resposta_externa = await client.get(url)
             if resposta_externa.status_code == 200:
